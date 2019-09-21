@@ -1,0 +1,15 @@
+<div class="card h-100">
+	<div class="card-body">
+		<h4 class="card-title">{{ team.name }}</h4>
+		<p class="font-italic text-muted">
+			Looking for: 
+			{% for skill in team.get_needed_skills() %}
+				{{ skill[0] }}{{ "," if not loop.last }}
+			{% endfor %}
+		</p>
+		<p class="card-text">{{ team.blurb | truncate(128) }}</p>
+	</div>
+	<div class="card-footer">
+		<a class="btn btn-primary" href="{{ url_for('team.team', teamid=team.id) }}">View Team</a>
+	</div>
+</div>

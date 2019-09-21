@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block site_content %}
+	<div class="container mt-5">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-primary" role="alert">{{ message }}</div>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6 col-lg-2">
+				<h5>{{ team.name }}</h5>
+				<p>
+					Owned by:
+					<br>
+					<a href="{{ url_for('user.user', userid=owner.id) }}">{{ owner.get_fullname() }}</a>
+				</p>
+				{% if team.owner == current_user.id %}
+					<a class="btn btn-primary mb-3" href="{{ url_for('team.edit', teamid=team.id) }}">Edit Team</a>
+				{% elif current_user.is_anonymous == False %}
+					{% if team.is_member(current_user) %}
+						<a class="btn btn-primary mb-3" href="{{ url_for('team.leave', teamid=team.id) }}">Leave Team</a>
+					{% else %}
+						<a class="btn btn-primary mb-3" href="{{ url_for('team.join', teamid=team.id) }}">Join Team</a>
+					{% endif %}
+				{% endif %}
+			</div>
+			<div class="col-lg-7">
+				<h3>About {{ team.name }}</h3>
+				<hr>
+				<p>{{ team.blurb }}</p>
+			</div>
+			<div class="col-lg-3 mb-5">
+				<h3>Needed Skills</h3>
+				<hr>
+				<ul class="list-group mb-3">
+					{% for skill in team.get_needed_skills() %}
+						<li class="list-group-item">{{ skill[0] }}</li>
+					{% endfor %}
+				</ul>
+				<h3>Members</h3>
+				<hr>
+				<div class="list-group">
+					{% for member in team.members %}
+						<a class="list-group-item list-group-item-action" href="{{ url_for('user.user', userid=member.id) }}">{{ member.get_fullname() }}</a>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

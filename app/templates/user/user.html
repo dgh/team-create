@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block site_content %}
+	<div class="container mt-5">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-primary" role="alert">{{ message }}</div>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6 col-lg-2">
+				<img class="img-thumbnail img-fluid" src="{{ user.avatar(512) }}">
+				<h5 class="mt-3">{{ user.get_fullname() }}</h5>
+				{% if user == current_user %}
+					<a class="btn btn-primary mt-2 mb-5" href="{{ url_for('user.user_edit', userid=user.id) }}">Edit Profile</a>
+				{% elif current_user.is_anonymous == False %}
+					<a class="btn btn-success mt-2 mb-5" href="{{ url_for('main.compose', id=user.id) }}">Send Message</a>
+				{% endif %}
+			</div>
+			<div class="col-lg-7">
+				<h3>About {{ user.first_name }}</h3>
+				<hr>
+				<p>{{ user.blurb }}</p>
+			</div>
+			<div class="col-lg-3 mb-5">
+				<h3>Teams</h3>
+				<hr>
+				<div class="list-group mb-3">
+					{% for team in user.teams %}
+						<a class="list-group-item list-group-item-action" href="{{ url_for('team.team', teamid=team.id) }}">
+							{{ team.name }}
+						</a>
+					{% endfor %}
+				</div>
+				<h3>Skills</h3>
+				<hr>
+				<ul class="list-group">
+					{% for skill in user.get_aquired_skills() %}
+						<li class="list-group-item">{{ skill[0] }}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+{% endblock %}

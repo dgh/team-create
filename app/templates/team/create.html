@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block site_content %}
+	<div class="container mt-5">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-primary" role="alert">{{ message }}</div>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8">
+				<h3>Create a New Team</h3>
+				<hr>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<form method="post">
+					{{ form.hidden_tag() }}
+					<div class="row">
+						<div class="col mb-3">
+							{{ form.name.label }}
+							{{ form.name(class="form-control") }}
+							{% for error in form.name.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col mb-3">
+							{{ form.blurb.label }}
+							<div class="input-group">
+								{{ form.blurb(class="form-control", maxlength="1024", rows="10", style="resize: none;") }}
+							</div>
+							{% for error in form.blurb.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
+					</div>
+					<hr>
+					<h5>What skills does your team need?</h5>
+					{% for skill in [form.skill_pm, form.skill_pr, form.skill_gd, form.skill_cm, form.skill_bs] %}
+						<div class="custom-control custom-checkbox mt-3">
+							{{ skill(class="custom-control-input") }}
+							{{ skill.label(class="custom-control-label") }}
+						</div>
+					{% endfor %}
+					<small class="text-muted">You may change these later.</small>
+					<hr>
+					<button class="btn btn-primary btn-lg btn-block mb-5" type="submit">Create Team</button>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block site_content %}
+	<div class="container mt-5">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-primary" role="alert">{{ message }}</div>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+	</div>
+	
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h3>Members</h3>
+				<p class="text-muted">Looking for additional members for your next project? Browse the current members.</p>
+				<hr>
+			</div>
+		</div>
+		<div class="row">
+			{% for user in users %}
+				<div class="col-md-4 mb-3">
+					<div class="card">
+						<img src="{{ user.avatar(256) }}" class="card-img-top">
+						<div class="card-body">
+							<h5 class="card-title">{{ user.get_fullname() }}</h5>
+							<p class="card-text">
+								{% if user.blurb %}
+									{{ user.blurb | truncate(128) }}
+								{% endif %}
+							</p>
+						</div>
+						<ul class="list-group list-group-flush">
+							{% for skill in user.get_aquired_skills() %}
+								<li class="list-group-item">
+									{{ skill[0] }}
+								</li>
+							{% endfor %}
+						</ul>
+						<div class="card-body">
+							<a class="btn btn-primary" href="{{ url_for('user.user', userid=user.id) }}">View Profile</a>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+			<div class="col-12 mb-4">
+				<nav>
+					<ul class="pagination">
+						{% if prev_url %}
+							<li class="page-item previous">
+								<a class="page-link" href="{{ prev_url or '#' }}">
+									<span aria-hidden="true">&larr;</span> Previous
+								</a>
+							</li>
+						{% endif %}
+						{% if next_url %}
+							<li class="page-item next">
+								<a class="page-link" href="{{ next_url or '#' }}">
+									Next <span aria-hidden="true">&rarr;</span>
+								</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+{% endblock %}
